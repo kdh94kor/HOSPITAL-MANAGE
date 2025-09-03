@@ -31,7 +31,7 @@ module.exports = (sequelize) => {
         }
     }, {
         tableName: 'empinfo',
-        timestamps: false // createdAt, updatedAt 컬럼 자동 생성 비활성화
+        timestamps: false
     });
 
     return Emp;

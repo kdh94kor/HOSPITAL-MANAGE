@@ -5,7 +5,7 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
-const sequelize = new Sequelize('hospital', 'postgres', '비밀번호', {
+const sequelize = new Sequelize('hospital', 'postgres', '비밀번호~', {
     host: 'localhost', 
     dialect: 'postgres',
     port: 5432 
@@ -51,7 +51,7 @@ app.post('/api/login_V1', async (req, res) => {
         }
 
         res.status(200).json({ 
-            message: user.empnam +'님 로그인 되었습니다.',
+            message: user.empnam +'님 반갑습니다.',
             user: {
                 empuid: user.empuid,
                 empnam: user.empnam,
@@ -78,6 +78,7 @@ app.get('/api/hospitals_V1', async (req, res) => {
         res.json(hospitals);
     } catch (error) {
         console.error('Get Error', error);
+        res.status(500).json({ message: '리스트 조회 중 오류가 발생했습니다.', error: error.message });
     }
 });
 
@@ -92,6 +93,46 @@ app.post('/api/hospitals_V1', async (req, res) => {
             return res.status(400).json({ errors: error.errors.map(e => e.message) });
         }
         res.status(500).send('Error');
+    }
+});
+
+//[GET] 회원가입 아이디 중복확인
+app.get('/api/manage/check-id/:userId', async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const user = await Emp.findOne({ where: { empuid: userId } });
+        if (user) {
+            res.json({ exists: true });
+        } else {
+            res.json({ exists: false });
+        }
+    } catch (error) {
+        console.error('Check ID Error:', error);
+        res.status(500).send('아이디 확인 중 오류가 발생했습니다.');
+    }
+});
+
+// [POST] 회원가입
+app.post('/api/manage/signup_V1', async (req, res) => {
+
+    const { empuid, emppwd, empnam, empdepcod } = req.body;
+    if (!empuid || !emppwd || !empnam || !empdepcod) {
+        return res.status(400).json({ message: '입력되지 않은 항목이 있습니다.' });
+    }
+
+    try {
+        const newUser = await Emp.create({
+            empuid, emppwd, empnam, empdepcod,
+            empstrdte: new Date(),
+            empenddte: new Date('2999-12-31')
+        });
+        res.status(201).json({ message: '회원가입이 완료되었습니다.', user: newUser });
+    } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            return res.status(409).json({ message: '이미 사용중인 아이디입니다.' });
+        }
+        console.error('singup Error:', error);
+        res.status(500).send('회원가입 중 오류가 발생했습니다.');
     }
 });
 

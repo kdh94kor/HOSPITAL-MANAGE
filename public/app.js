@@ -1,73 +1,64 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const hospitalList = document.getElementById('hospital-list');
-    const hospitalForm = document.getElementById('hospital-form');
+    const hospitalListElement = document.getElementById('hospital-list');
+    let allHospitals = []; // To store all hospital data
+
+    // Use lowercase column names to match the data from the server
     const columns = [
-        'HSPCOD', 'HSPNAM', 'HSPSTRDTE', 'HSPENDDTE', 'HSPGRD', 'HSPIP', 'HSPPORT', 
-        'HSPPWD', 'HSPAUTOLIST', 'HSPMEALYON', 'HSPETC', 'HSPPACSCO', 'HSPSMSCO', 
-        'HSPHSTSTRDTE', 'HSPHSTENDDTE', 'HSPSEEUSEYON', 'HSPOCSVER'
+        'hspcod', 'hspnam', 'hspstrdte', 'hspenddte', 'hspgrd', 'hspip', 'hspport', 
+        'hsppwd', 'hspautolist', 'hspmealyon', 'hspetc', 'hsppacsco', 'hspsmsco', 
+        'hsphststrdte', 'hsphstenddte', 'hspseeuseyon', 'hspocsver'
     ];
 
-    // 병원 목록 가져오기
+    // Function to display details of a selected hospital
+    function displayHospitalDetails(hspcod) {
+        const selectedHospital = allHospitals.find(h => h.hspcod === hspcod);
+        if (!selectedHospital) return;
+
+        columns.forEach(col => {
+            const inputElement = document.getElementById(`detail-${col}`);
+            if (inputElement) {
+                inputElement.value = selectedHospital[col] || '';
+            }
+        });
+    }
+
+    // Fetch all hospitals and populate the list on the left
     async function fetchHospitals() {
         try {
-            const response = await fetch('/api/hospitals');
+            const response = await fetch('/api/hospitals_V1');
             if (!response.ok) {
-                throw new Error(`오류코드 : ${response.status}`);
+                throw new Error(`Error fetching hospitals: ${response.status}`);
             }
-            const hospitals = await response.json();
+            allHospitals = await response.json();
             
-            hospitalList.innerHTML = ''; // 목록 초기화
-            hospitals.forEach(hospital => {
-                const row = document.createElement('tr');
-                let rowHTML = '';
-                columns.forEach(col => {
-                    rowHTML += `<td>${hospital[col] || ''}</td>`;
-                });
-                rowHTML += `
-                    <td>
-                        <button class="btn btn-sm btn-warning">수정</button>
-                        <button class="btn btn-sm btn-danger">삭제</button>
-                    </td>
-                `;
-                row.innerHTML = rowHTML;
-                hospitalList.appendChild(row);
+            hospitalListElement.innerHTML = ''; // Clear existing list
+            allHospitals.forEach(hospital => {
+                const listItem = document.createElement('button');
+                listItem.type = 'button';
+                listItem.className = 'list-group-item list-group-item-action';
+                listItem.textContent = hospital.hspnam; // Use lowercase
+                listItem.dataset.hspcod = hospital.hspcod; // Use lowercase
+                hospitalListElement.appendChild(listItem);
             });
         } catch (error) {
-            console.error('조회 실패 : ', error);
+            console.error('Failed to fetch hospitals:', error);
         }
     }
 
-    // 새 병원 추가
-    hospitalForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const newHospitalData = {};
-        columns.forEach(col => {
-            newHospitalData[col] = document.getElementById(col).value;
-        });
-
-        try {
-            const response = await fetch('/api/hospitals', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newHospitalData),
-            });
-
-            if (response.ok) {
-                hospitalForm.reset();
-                fetchHospitals(); 
-            } else {
-                const errorData = await response.json();
-                console.error('Failed to add hospital:', errorData);
-                alert('병원 추가 실패: ' + (errorData.errors ? errorData.errors.join(', ') : '서버 오류'));
+    // Add click listener to the list to handle hospital selection
+    hospitalListElement.addEventListener('click', (e) => {
+        if (e.target && e.target.matches('.list-group-item')) {
+            const currentlyActive = hospitalListElement.querySelector('.active');
+            if (currentlyActive) {
+                currentlyActive.classList.remove('active');
             }
-        } catch (error) {
-            console.error('Error adding hospital:', error);
+            e.target.classList.add('active');
+
+            const hspcod = e.target.dataset.hspcod;
+            displayHospitalDetails(hspcod);
         }
     });
 
-    // 초기 병원 목록 로드
+    // Initial fetch of hospitals
     fetchHospitals();
 });

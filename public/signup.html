@@ -14,30 +14,26 @@
                 <h1 class="card-title text-center mb-4">회원가입</h1>
                 <form>
                     <div class="mb-3">
-                        <label for="user-id" class="form-label">아이디</label>
+                        <label for="id" class="form-label">아이디</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="user-id" required>
-                            <button class="btn btn-outline-secondary" type="button" id="check-duplicate-btn">중복확인</button>
+                            <input type="text" class="form-control" id="emp-id" required>
+                            <button type="button" class="btn btn-outline-secondary"  id="check-duplicate-btn">중복확인</button>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">비밀번호</label>
-                        <input type="password" class="form-control" id="password" required>
+                        <input type="password" class="form-control" id="emp-pwd" required>
                     </div>
                     <div class="mb-3">
                         <label for="name" class="form-label">이름</label>
-                        <input type="text" class="form-control" id="name" required>
+                        <input type="text" class="form-control" id="emp-nam" required>
                     </div>
                     <div class="mb-3">
                         <label for="department" class="form-label">부서</label>
-                        <input type="text" class="form-control" id="department" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="employee-number" class="form-label">사번</label>
-                        <input type="text" class="form-control" id="employee-number" required>
+                        <input type="text" class="form-control" id="emp-depcod" required>
                     </div>
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">가입하기</button>
+                        <button type="button" class="btn btn-primary" id ="signup-btn">가입하기</button>
                     </div>
                 </form>
                 <div class="text-center mt-3">

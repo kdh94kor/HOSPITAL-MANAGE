@@ -2,61 +2,61 @@ const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
     const Hospital = sequelize.define('Hospital', {
-        HSPCOD: {
+        hspcod: {
             type: DataTypes.STRING(40),
             primaryKey: true
         },
-        HSPNAM: {
+        hspnam: {
             type: DataTypes.STRING(40)
         },
-        HSPSTRDTE: {
+        hspstrdte: {
             type: DataTypes.STRING(8)
         },
-        HSPENDDTE: {
+        hspenddte: {
             type: DataTypes.STRING(8)
         },
-        HSPGRD: {
+        hspgrd: {
             type: DataTypes.STRING(20)
         },
-        HSPIP: {
+        hspip: {
             type: DataTypes.STRING(400)
         },
-        HSPPORT: {
+        hspport: {
             type: DataTypes.STRING(400)
         },
-        HSPPWD: {
+        hsppwd: {
             type: DataTypes.STRING(2000)
         },
-        HSPAUTOLIST: {
+        hspautolist: {
             type: DataTypes.STRING(200)
         },
-        HSPMEALYON: {
+        hspmealyon: {
             type: DataTypes.STRING(4)
         },
-        HSPETC: {
+        hspetc: {
             type: DataTypes.STRING(2000)
         },
-        HSPPACSCO: {
+        hsppacsco: {
             type: DataTypes.STRING(40)
         },
-        HSPSMSCO: {
+        hspsmsco: {
             type: DataTypes.STRING(40)
         },
-        HSPHSTSTRDTE: {
+        hsphststrdte: {
             type: DataTypes.STRING(8)
         },
-        HSPHSTENDDTE: {
+        hsphstenddte: {
             type: DataTypes.STRING(8)
         },
-        HSPSEEUSEYON: {
+        hspseeuseyon: {
             type: DataTypes.STRING(40)
         },
-        HSPOCSVER: {
+        hspocsver: {
             type: DataTypes.STRING(40)
         }
     }, {
-        tableName: 'Z_HspInf',
-        timestamps: false // 타임스탬프 컬럼 (createdAt, updatedAt) 자동 생성을 비활성화
+        tableName: 'hspinfo',
+        timestamps: false
     });
 
     return Hospital;
