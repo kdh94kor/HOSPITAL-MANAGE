@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const { Sequelize, Op } = require('sequelize');
 const path = require('path');
@@ -5,7 +6,7 @@ const path = require('path');
 const app = express();
 const port = 3333;
 
-const sequelize = new Sequelize('hospital', 'postgres', '비밀번호~', {
+const sequelize = new Sequelize('hospital', 'postgres', process.env.DB_PWD, {
     host: 'localhost', 
     dialect: 'postgres',
     port: 5432 
