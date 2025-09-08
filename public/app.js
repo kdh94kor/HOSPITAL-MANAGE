@@ -1,17 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     const hospitalListElement = document.getElementById('hospital-list');
-    let allHospitals = []; // To store all hospital data
-
-    // Use lowercase column names to match the data from the server
+    let allHospitals = []; 
+    
     const columns = [
-        'hspcod', 'hspnam', 'hspstrdte', 'hspenddte', 'hspgrd', 'hspip', 'hspport', 
-        'hsppwd', 'hspautolist', 'hspmealyon', 'hspetc', 'hsppacsco', 'hspsmsco', 
-        'hsphststrdte', 'hsphstenddte', 'hspseeuseyon', 'hspocsver'
+        'HSPCOD', 'HSPNAM', 'HSPSTRDTE', 'HSPENDDTE', 'HSPGRD', 'HSPIP', 'HSPPORT', 
+        'HSPPWD', 'HSPAUTOLIST', 'HSPMEALYON', 'HSPETC', 'HSPPACSCO', 'HSPSMSCO', 
+        'HSPHSTSTRDTE', 'HSPHSTENDDTE', 'HSPSEEUSEYON', 'HSPOCSVER'
     ];
 
-    // Function to display details of a selected hospital
     function displayHospitalDetails(hspcod) {
-        const selectedHospital = allHospitals.find(h => h.hspcod === hspcod);
+        const selectedHospital = allHospitals.find(h => h.HSPCOD === hspcod);
         if (!selectedHospital) return;
 
         columns.forEach(col => {
@@ -22,22 +20,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Fetch all hospitals and populate the list on the left
     async function fetchHospitals() {
         try {
             const response = await fetch('/api/hospitals_V1');
             if (!response.ok) {
-                throw new Error(`Error fetching hospitals: ${response.status}`);
+                throw new Error(`목록을 불러오는데 실패했습니다. ${response.status}`);
             }
             allHospitals = await response.json();
             
-            hospitalListElement.innerHTML = ''; // Clear existing list
+            hospitalListElement.innerHTML = ''; 
+
             allHospitals.forEach(hospital => {
                 const listItem = document.createElement('button');
                 listItem.type = 'button';
                 listItem.className = 'list-group-item list-group-item-action';
-                listItem.textContent = hospital.hspnam; // Use lowercase
-                listItem.dataset.hspcod = hospital.hspcod; // Use lowercase
+                listItem.textContent = hospital.HSPNAM;
+                listItem.dataset.hspcod = hospital.HSPCOD;
                 hospitalListElement.appendChild(listItem);
             });
         } catch (error) {
@@ -45,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Add click listener to the list to handle hospital selection
     hospitalListElement.addEventListener('click', (e) => {
         if (e.target && e.target.matches('.list-group-item')) {
             const currentlyActive = hospitalListElement.querySelector('.active');
@@ -59,6 +56,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Initial fetch of hospitals
     fetchHospitals();
 });

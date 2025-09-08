@@ -3,7 +3,7 @@ const { Sequelize, Op } = require('sequelize');
 const path = require('path');
 
 const app = express();
-const port = 3000;
+const port = 3333;
 
 const sequelize = new Sequelize('hospital', 'postgres', '비밀번호~', {
     host: 'localhost', 
@@ -17,7 +17,9 @@ const Emp = require(path.join(__dirname, 'models', 'emp.js'))(sequelize); //직�
 
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+
 
 ////////////////////////////////////////////////////////////////
 //######################  LOGIN  #############################//
@@ -137,6 +139,10 @@ app.post('/api/manage/signup_V1', async (req, res) => {
 });
 
 
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+});
+
 async function runServer() {
     try {
         await sequelize.authenticate();
@@ -153,3 +159,4 @@ async function runServer() {
 }
 
 runServer();
+
